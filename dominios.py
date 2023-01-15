@@ -14,7 +14,7 @@
 
 # constantes globales
 import shutil
-bind_path = "/etc/bind"
+bind_path = "/home/daniel/SERRED/bind"
 
 
 # importar o instalar rich
@@ -62,7 +62,7 @@ def addregla(dom: str, PTR: bool = False) -> str:
         return f"{ip}\tIN\tPTR\t{nombre}"
 
 
-def append(file: str, lines: list[str]) -> None:
+def append(file: str, lines: 'list[str]') -> None:
     with open(f"{bind_path}/{file}", "a+") as f:
         f.write('\n'.join(lines) + '\n')
         f.seek(0)
