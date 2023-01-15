@@ -14,7 +14,7 @@
 
 # constantes globales
 import shutil
-bind_path = "/home/daniel/SERRED/bind"
+bind_path = "/etc/bind"
 
 
 # importar o instalar rich
