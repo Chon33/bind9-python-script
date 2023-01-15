@@ -14,7 +14,7 @@
 
 # constantes globales
 import shutil
-bind_path = "/etc/bind"
+bind_path = "/home/daniel/SERRED/bind"
 
 
 # importar o instalar rich
@@ -84,13 +84,13 @@ def printinfo(IP: str, DOMINIO: str) -> None:
 # Directa
 def directa() -> None:
     print("\n[[bold red blink]![/bold red blink]] Estas añadiendo una regla directa")
-    DOMINIO = Prompt.ask(" - Nombre del dominio").lower()
+    DOMINIO = Prompt.ask(" - Nombre de la zona").lower()
     IP = Prompt.ask(" - IP del servidor ( SIN EL /24 )")
 
     lines = [
        f"zone \"{DOMINIO}\" {'{'}",
-        "    type master",
-       f"    file \"{bind_path}/db.{DOMINIO}\"",
+        "    type master;",
+       f"    file \"{bind_path}/db.{DOMINIO}\";",
         "}"
     ]
 
@@ -127,8 +127,8 @@ def directa() -> None:
 # Inversa
 def inversa() -> None:
     print("\n[[bold red blink]![/bold red blink]] Estas añadiendo una regla INdirecta")
-    DOMINIO = Prompt.ask(" - Nombre del dominio").lower()
-    ip_str = Prompt.ask("Que IP le quieres poner? (al derecho)")
+    DOMINIO = Prompt.ask(" - Nombre de la zona").lower()
+    ip_str = Prompt.ask("Que IP le quieres poner al servidor de DNS? (al derecho)")
     indexes = ([pos for pos, char in enumerate(ip_str) if char == '.'])
 
     (ip1, ip2, ip3) = (
@@ -156,16 +156,16 @@ def inversa() -> None:
     # editar db.IP
     with open(f"{bind_path}/db.{IP}", "r+") as f:
         filedata = f.read()
-        filedata = filedata.replace("1.0.0	IN	PTR	localhost.", "")
+        filedata = filedata.replace("1.0.0", "#1.0.0")
         filedata = filedata.replace("localhost", DOMINIO)
         f.seek(0)
         f.write(filedata)
         f.close()
 
     reglas = []
-    reglas.append(addregla(DOMINIO))
+    reglas.append(addregla(DOMINIO, True))
     while Prompt.ask("\nQuieres añadir otra? (S)i / (N)o").lower() != "n":
-        reglas.append(addregla(DOMINIO))
+        reglas.append(addregla(DOMINIO, True))
 
     append(f"db.{IP}", reglas)
 
@@ -175,6 +175,7 @@ def inversa() -> None:
 
 # Reenviadores
 def reenviadores() -> None:
+    reenvi = []
     if Prompt.ask("\nQuieres poner los reenviadores del juande ortomatikmente? ([bold blue]S[/bold blue])i / ([bold blue]N[/bold blue])o", choices=["s", "n", "S", "N"], show_choices=False).lower() == "s":
         reenvi = [
             "192.168.8.1",
@@ -182,9 +183,9 @@ def reenviadores() -> None:
         ]
     else:
         reenvi = []
-        reenvi.append(Prompt.ask("IP del reenviador (Sin acabar por [bold blue];[/bold blue])"))
+        reenvi.append(Prompt.ask("IP del reenviador"))
         while Prompt.ask("\nQuieres añadir otro reenviador? (S)i / (N)o", choices=["s", "n", "S", "N"], show_choices=False).lower() != "n":
-            reenvi.append(Prompt.ask("IP del reenviador (Sin acabar por [bold blue];[/bold blue])"))
+            reenvi.append(Prompt.ask("IP del reenviador"))
     
     for i, _ in enumerate(reenvi):
         reenvi[i] += ";"
