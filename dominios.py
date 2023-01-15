@@ -14,7 +14,7 @@
 
 # constantes globales
 import shutil
-bind_path = "/etc/bind"
+bind_path = "/home/daniel/SERRED/bind"
 
 
 # importar o instalar rich
@@ -57,7 +57,7 @@ def addregla(dom: str, PTR: bool = False) -> str:
             ip = Prompt.ask("Que IP le quieres dar?")
             return f"{nuevo_nombre}\tIN\tA\t{ip}"
     else:
-        nombre = Prompt.ask(f"Nombre del PTR? (sin el nombre de dominio [blue]{dom}[/blue])")
+        nombre = Prompt.ask(f"Nombre del registro A para convertir a inversa? (sin el nombre de la zona [blue]{dom}[/blue])")
         ip = Prompt.ask("IP del PTR? (Solo el ultimo dígito X.X.X.[blue]X[/blue])")
         return f"{ip}\tIN\tPTR\t{nombre}.{dom}."
 
@@ -141,8 +141,8 @@ def inversa() -> None:
 
     lines = [
        f"zone \"{IP}.in-addr.arpa\" {'{'}",
-        "    type master",
-       f"    file \"{bind_path}/db.{IP}\"",
+        "    type master;",
+       f"    file \"{bind_path}/db.{IP}\";",
         "}"
     ]
 
