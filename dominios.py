@@ -59,7 +59,7 @@ def addregla(dom: str, PTR: bool = False) -> str:
     else:
         nombre = Prompt.ask(f"Nombre del PTR? (sin el nombre de dominio [blue]{dom}[/blue])")
         ip = Prompt.ask("IP del PTR? (Solo el ultimo dígito X.X.X.[blue]X[/blue])")
-        return f"{ip}\tIN\tPTR\t{nombre}"
+        return f"{ip}\tIN\tPTR\t{nombre}.{dom}."
 
 
 def append(file: str, lines: 'list[str]') -> None:
