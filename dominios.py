@@ -14,6 +14,7 @@
 
 # constantes globales
 import shutil
+from subprocess import check_output
 bind_path = "/etc/bind"
 
 
@@ -48,8 +49,8 @@ def addregla(dom: str, PTR: bool = False) -> str:
         choices=["dominio", "cname"]).lower()
 
         if t == "cname":
-            nuevo_nombre = Prompt.ask("Que nombre le quieres poner?").lower()
-            dominio = Prompt.ask("A que dominio?").lower()
+            nuevo_nombre = Prompt.ask("Alias").lower()
+            dominio = Prompt.ask("A que dominio apunta?").lower()
             return f"{nuevo_nombre}\tIN\tCNAME\t{dominio}.{dom}."
 
         else:
@@ -170,7 +171,7 @@ def inversa() -> None:
     append(f"db.{IP}", reglas)
 
     print("Se supone que esto lo tienes ya pero...")
-    printinfo(IP, DOMINIO)
+    printinfo(ip_str, DOMINIO)
 
 
 # Reenviadores
@@ -184,7 +185,7 @@ def reenviadores() -> None:
     else:
         reenvi = []
         reenvi.append(Prompt.ask("IP del reenviador"))
-        while Prompt.ask("\nQuieres añadir otro reenviador? (S)i / (N)o", choices=["s", "n", "S", "N"], show_choices=False).lower() != "n":
+        while Prompt.ask("\nQuieres añadir otro reenviador? ([bold blue]S[/bold blue])i / ([bold blue]N[/bold blue])o", choices=["s", "n", "S", "N"], show_choices=False).lower() != "n":
             reenvi.append(Prompt.ask("IP del reenviador"))
     
     for i, _ in enumerate(reenvi):
@@ -207,11 +208,19 @@ def reenviadores() -> None:
         
 
 # Main
-ans = Prompt.ask("Que zona quieres hacer?\n([bold blue]D[/bold blue])irecta / ([bold blue]I[/bold blue])nversa / ([bold blue]R[/bold blue])eenviadores").lower()
+def main():
+    ans = Prompt.ask("\nQue zona quieres hacer?\n([bold blue]D[/bold blue])irecta / ([bold blue]I[/bold blue])nversa / ([bold blue]R[/bold blue])eenviadores / ([bold blue]E[/bold blue])mpezar DNS").lower()
 
-if ans in ["directa", "d"]:
-    directa()
-elif ans in ["inversa", "i"]:
-    inversa()
-elif ans in ["reenviadores", "r"]:
-    reenviadores()
+    if ans in ["directa", "d"]:
+        directa()
+    elif ans in ["inversa", "i"]:
+        inversa()
+    elif ans in ["reenviadores", "r"]:
+        reenviadores()
+    elif ans in ["empezar", "e"]:
+        check_output(["/etc/init.d/named", "start"]).decode('utf-8')
+        check_output(["/etc/init.d/named", "status"]).decode('utf-8')
+
+
+while Prompt.ask("\nQuieres hacer algo mas? ([bold blue]S[/bold blue])i / ([bold blue]N[/bold blue])o") != "n":
+    main()
