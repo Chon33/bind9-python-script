@@ -218,9 +218,9 @@ def main():
     elif ans in ["reenviadores", "r"]:
         reenviadores()
     elif ans in ["empezar", "e"]:
-        check_output(["/etc/init.d/named", "start"]).decode('utf-8')
-        check_output(["/etc/init.d/named", "status"]).decode('utf-8')
+        print(check_output(["/etc/init.d/named", "start"]).decode('utf-8'))
+        print(check_output(["/etc/init.d/named", "status"]).decode('utf-8'))
 
-
+main()
 while Prompt.ask("\nQuieres hacer algo mas? ([bold blue]S[/bold blue])i / ([bold blue]N[/bold blue])o") != "n":
     main()
