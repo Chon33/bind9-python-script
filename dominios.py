@@ -92,7 +92,7 @@ def directa() -> None:
        f"zone \"{DOMINIO}\" {'{'}",
         "    type master;",
        f"    file \"{bind_path}/db.{DOMINIO}\";",
-        "}"
+        "};"
     ]
 
     append("named.conf.local", lines)
@@ -144,7 +144,7 @@ def inversa() -> None:
        f"zone \"{IP}.in-addr.arpa\" {'{'}",
         "    type master;",
        f"    file \"{bind_path}/db.{IP}\";",
-        "}"
+        "};"
     ]
 
     append("named.conf.local", lines)
